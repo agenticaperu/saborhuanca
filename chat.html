@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#130B09" />
+<title>Chat | Sabor Huanca, cocina andina en Huancayo</title>
+<meta name="description" content="Pide, reclama o consulta a Sabor Huanca con el asistente de IA." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500;1,9..144,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --fondo:#130B09; --panel:#1C110D; --panel-2:#26170F; --borde:#3B2519; --texto:#EFE3D0; --suave:#A8977F; --oro:#F2B33D; --oro-osc:#C98F17; --vino:#9E2A1D; --serif:"Fraunces",Georgia,serif; --sans:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: var(--sans); color: var(--texto); background: var(--fondo); line-height: 1.5; -webkit-font-smoothing: antialiased; display: grid; place-items: center; padding: 20px; position: relative; overflow: hidden; }
+  body::before { content: ""; position: fixed; inset: 0; background: linear-gradient(180deg, rgba(19,11,9,.78), rgba(19,11,9,.92)), url("https://images.unsplash.com/photo-1564436872-f6d81182df12?auto=format&fit=crop&w=1800&q=70") center / cover, radial-gradient(circle at 30% 20%, #4a2a1b, #130B09 70%); filter: saturate(.9); z-index: -1; }
+  button, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; border: 0; background: none; }
+  :focus-visible { outline: 3px solid var(--oro); outline-offset: 2px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .app { width: min(1080px, 100%); height: min(780px, calc(100vh - 40px)); display: grid; grid-template-columns: 360px 1fr; background: rgba(28,17,13,.94); border: 1px solid var(--borde); border-radius: 24px; box-shadow: 0 30px 90px rgba(0,0,0,.65); overflow: hidden; backdrop-filter: blur(10px); }
+  /* ===== Pedido ===== */
+  .pedido { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--borde); background: var(--panel); }
+  .marca { display: flex; align-items: center; gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--borde); }
+  .marca b { font-family: var(--serif); font-style: italic; font-size: 1.45rem; line-height: 1.1; display: block; }
+  .marca small { color: var(--suave); font-size: .78rem; }
+  .ped-cuerpo { flex: 1; overflow-y: auto; padding: 6px 20px 14px; }
+  .ped-cuerpo h2 { font-family: var(--serif); font-size: 1.15rem; margin: 14px 0 4px; }
+  .ped-cuerpo .ayuda { color: var(--suave); font-size: .84rem; margin-bottom: 8px; }
+  .plato { display: grid; grid-template-columns: 62px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--borde); }
+  .plato .f { width: 62px; height: 62px; border-radius: 12px; overflow: hidden; background: radial-gradient(circle at 50% 40%, #4a2a1b, #1c110d); }
+  .plato img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .plato b { display: block; font-size: .95rem; line-height: 1.25; }
+  .plato .p { color: var(--oro); font-family: var(--serif); font-weight: 700; font-size: .95rem; }
+  .paso { display: inline-flex; align-items: center; border: 1px solid var(--borde); border-radius: 10px; overflow: hidden; }
+  .paso button { width: 34px; height: 36px; font-size: 1.15rem; font-weight: 700; color: var(--oro); }
+  .paso button:hover { background: rgba(242,179,61,.14); }
+  .paso span { min-width: 26px; text-align: center; font-weight: 700; }
+  .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; margin-top: 6px; }
+  .seg button { min-height: 42px; padding: 6px; border: 1px solid var(--borde); border-radius: 10px; background: var(--panel-2); font-size: .84rem; font-weight: 600; }
+  .seg button[aria-pressed="true"] { border-color: var(--oro); color: var(--oro); background: rgba(242,179,61,.1); }
+  #direccion { display: none; width: 100%; margin-top: 10px; min-height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--borde); background: var(--panel-2); }
+  #direccion:focus { outline: none; border-color: var(--oro); }
+  .ped-pie { padding: 14px 20px 18px; border-top: 1px solid var(--borde); background: var(--panel-2); }
+  .tot div { display: flex; justify-content: space-between; color: var(--suave); font-size: .9rem; padding: 2px 0; }
+  .tot .total { color: var(--texto); font-family: var(--serif); font-weight: 700; font-size: 1.45rem; margin-top: 4px; padding-top: 6px; border-top: 1px solid var(--borde); }
+  .btn-env { width: 100%; min-height: 50px; margin-top: 10px; border-radius: 10px; background: var(--oro); color: #1b0f08; font-weight: 700; }
+  .btn-env:hover { background: #FFC85A; }
+  .btn-env[disabled] { opacity: .4; cursor: not-allowed; }
+  .aviso { color: #ff8a73; font-size: .84rem; font-weight: 600; min-height: 1.2em; margin-top: 6px; }
+  .link { color: var(--suave); font-size: .82rem; text-decoration: underline; text-underline-offset: 3px; }
+  .link:hover { color: var(--oro); }
+
+  /* ===== Chat ===== */
+  .chat { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+  .ch-cab { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--borde); background: var(--panel-2); }
+  .ch-cab .info { flex: 1; min-width: 0; }
+  .ch-cab strong { display: block; font-family: var(--serif); font-size: 1.1rem; }
+  .ch-cab small { color: var(--suave); display: flex; align-items: center; gap: 7px; }
+  .ch-cab small b { color: var(--oro); letter-spacing: .06em; }
+  .vivo { flex: none; width: 8px; height: 8px; border-radius: 50%; background: #5fd38a; animation: latido 2s infinite; }
+  .vivo.off { background: #ff8a73; animation: none; }
+  @keyframes latido { 50% { box-shadow: 0 0 0 5px rgba(95,211,138,.25); } }
+  .ch-cab .hb { min-height: 38px; padding: 0 14px; border: 1px solid var(--borde); border-radius: 999px; font-size: .82rem; font-weight: 600; }
+  .ch-cab .hb:hover { border-color: var(--oro); color: var(--oro); }
+  .mensajes { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; background: rgba(19,11,9,.55); }
+  .msg { display: flex; flex-direction: column; gap: 5px; max-width: 84%; }
+  .msg.cliente { align-self: flex-end; align-items: flex-end; }
+  .msg.asistente { align-self: flex-start; }
+  .burbuja { padding: 10px 14px; border-radius: 16px; font-size: .96rem; overflow-wrap: anywhere; }
+  .cliente .burbuja { background: var(--oro); color: #1b0f08; border-bottom-right-radius: 4px; }
+  .asistente .burbuja { background: var(--panel-2); border: 1px solid var(--borde); border-bottom-left-radius: 4px; }
+  .burbuja p { margin: 2px 0; } .burbuja ul { padding-left: 20px; margin: 4px 0; }
+  .hora { font-size: .7rem; color: var(--suave); }
+  .tag { align-self: flex-start; font-size: .74rem; font-weight: 700; color: var(--oro); border: 1px solid var(--oro-osc); padding: 2px 10px; border-radius: 999px; }
+  .escribiendo { display: flex; gap: 4px; align-items: center; height: 18px; }
+  .escribiendo i { width: 7px; height: 7px; background: var(--oro); border-radius: 50%; animation: salto 1s infinite; }
+  .escribiendo i:nth-child(2) { animation-delay: .15s; } .escribiendo i:nth-child(3) { animation-delay: .3s; }
+  @keyframes salto { 0%, 60%, 100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-5px); opacity: 1; } }
+  .reintentar { align-self: flex-start; min-height: 36px; padding: 0 16px; border: 1px solid var(--oro); border-radius: 999px; color: var(--oro); font-weight: 700; font-size: .86rem; }
+  .rapidas { display: flex; gap: 6px; overflow-x: auto; padding: 10px 14px; border-top: 1px solid var(--borde); background: var(--panel); }
+  .rapidas button { white-space: nowrap; min-height: 36px; padding: 0 14px; border: 1px solid var(--borde); border-radius: 999px; font-size: .84rem; font-weight: 600; }
+  .rapidas button:hover { border-color: var(--oro); color: var(--oro); }
+  .comp { display: flex; gap: 8px; padding: 10px 14px 14px; background: var(--panel); }
+  .comp input { flex: 1; min-width: 0; min-height: 48px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--borde); background: var(--fondo); }
+  .comp input:focus { outline: none; border-color: var(--oro); }
+  .comp button { flex: none; min-height: 48px; padding: 0 24px; border-radius: 999px; background: var(--vino); font-weight: 700; }
+  .comp button:hover { background: #B8331F; }
+  .comp button[disabled] { opacity: .5; cursor: wait; }
+  .creditos { position: fixed; left: 0; right: 0; bottom: 6px; text-align: center; font-size: .7rem; color: rgba(239,227,208,.55); pointer-events: none; }
+  .pestanas { display: none; }
+  .toast { position: fixed; left: 50%; bottom: 30px; transform: translate(-50%, 20px); background: var(--texto); color: var(--fondo); padding: 10px 18px; border-radius: 10px; font-weight: 600; z-index: 50; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
+  .toast.visible { opacity: 1; transform: translate(-50%, 0); }
+  @media (max-width: 860px) {
+    body { padding: 0; place-items: stretch; }
+    .app { height: 100dvh; width: 100%; border-radius: 0; grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+    .pestanas { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--borde); background: var(--panel); }
+    .pestanas button { min-height: 46px; font-weight: 700; color: var(--suave); border-bottom: 3px solid transparent; }
+    .pestanas button[aria-selected="true"] { color: var(--oro); border-bottom-color: var(--oro); }
+    .pedido, .chat { grid-row: 2; border: 0; }
+    .app[data-v="chat"] .pedido, .app[data-v="pedido"] .chat { display: none; }
+    .creditos { display: none; }
+    .ch-cab > svg { display: none; }
+    .ch-cab small { flex-wrap: wrap; row-gap: 0; }
+    #estado { display: none; }
+    .ch-cab strong { font-size: 1rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="app" id="app" data-v="chat">
+  <div class="pestanas" role="tablist"><button role="tab" data-v="pedido" aria-selected="false">Mi pedido <span class="num" id="cnt">0</span></button><button role="tab" data-v="chat" aria-selected="true">Chat</button></div>
+
+  <section class="pedido" aria-label="Arma tu pedido">
+    <div class="marca">
+      <svg width="42" height="42" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="16" fill="#F2B33D"/><circle cx="17" cy="17" r="8" fill="#C8281E"/><g stroke="#130B09" stroke-width="2" stroke-linecap="round"><path d="M17 1.5v4M17 28.5v4M1.5 17h4M28.5 17h4M6 6l2.8 2.8M25.2 25.2L28 28M28 6l-2.8 2.8M8.8 25.2L6 28"/></g></svg>
+      <div><b>Sabor Huanca</b><small>Cocina andina, Huancayo</small></div>
+    </div>
+    <div class="ped-cuerpo">
+      <h2>Arma tu pedido</h2>
+      <p class="ayuda">Elige tus platos y envíalo. El asistente te pedirá confirmar antes de registrarlo.</p>
+      <div id="platos"></div>
+      <h2>Modalidad</h2>
+      <div class="seg" id="segMod"><button type="button" data-v="Delivery" aria-pressed="false">Delivery (+S/ 5)</button><button type="button" data-v="Recojo en tienda" aria-pressed="true">Recojo en tienda</button></div>
+      <input id="direccion" type="text" placeholder="Dirección (centro de Huancayo, El Tambo o Chilca)" aria-label="Dirección de entrega" autocomplete="street-address" />
+      <h2>Medio de pago</h2>
+      <div class="seg" id="segPago"><button type="button" data-v="Yape" aria-pressed="true">Yape</button><button type="button" data-v="Plin" aria-pressed="false">Plin</button><button type="button" data-v="Efectivo" aria-pressed="false">Efectivo</button></div>
+    </div>
+    <div class="ped-pie">
+      <div class="tot num"><div><span>Subtotal</span><span id="sub">S/ 0</span></div><div><span>Delivery</span><span id="del">S/ 0</span></div><div class="total"><span>Total</span><span id="tot">S/ 0</span></div></div>
+      <button class="btn-env" id="btnEnv" type="button">Enviar pedido al asistente</button>
+      <p class="aviso" id="aviso" role="status"></p>
+      <button class="link" type="button" id="btnVaciar">Vaciar pedido</button> <a class="link" href="index.html" style="margin-left:12px">Ver la carta con fotos</a>
+    </div>
+  </section>
+
+  <section class="chat" aria-label="Chat con el asistente">
+    <div class="ch-cab">
+      <svg width="38" height="38" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="16" fill="#F2B33D"/><circle cx="17" cy="17" r="8" fill="#C8281E"/></svg>
+      <div class="info"><strong>Asistente Sabor Huanca</strong><small><span class="vivo" id="vivo"></span><span id="estado">En línea, responde en segundos</span> · Chat <b id="cod" title="Código de tu chat">----</b></small></div>
+      <button class="hb" type="button" id="btnNueva">Nueva conversación</button>
+    </div>
+    <div class="mensajes" id="mensajes" role="log" aria-live="polite"></div>
+    <div class="rapidas" id="rapidas"></div>
+    <form class="comp" id="form"><label class="sr" for="entrada">Mensaje</label><input id="entrada" type="text" placeholder="Escribe tu mensaje" autocomplete="off" maxlength="600" /><button type="submit" id="btnSend">Enviar</button></form>
+  </section>
+</div>
+<p class="creditos">Foto de fondo: Unsplash. Demostración de un sistema multiagente con IA construido en n8n.</p>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+  const N8N_CHAT_WEBHOOK_URL = "https://universidadcontinental.app.n8n.cloud/webhook/af929cdc-2ac9-4760-b692-05355cfc9eb5/chat";
+  const COSTO_DELIVERY = 5;
+  const CARTA = [
+    { codigo: "P1", nombre: "Pollo a la brasa 1/4", precio: 18, imagen: "https://images.unsplash.com/photo-1564436872-f6d81182df12?auto=format&fit=crop&w=200&h=200&q=70" },
+    { codigo: "P2", nombre: "Pollo a la brasa 1/2", precio: 34, imagen: "https://images.unsplash.com/photo-1643886027883-1a23fe41ee2a?auto=format&fit=crop&w=200&h=200&q=70" },
+    { codigo: "P3", nombre: "Pachamanca personal", precio: 28, imagen: "https://images.unsplash.com/photo-1535400255456-984241443b29?auto=format&fit=crop&w=200&h=200&q=70" },
+    { codigo: "P4", nombre: "Trucha frita", precio: 25, imagen: "https://images.unsplash.com/photo-1548704087-b11dab0fbec0?auto=format&fit=crop&w=200&h=200&q=70" },
+    { codigo: "E1", nombre: "Papa a la huancaína", precio: 12, imagen: "https://images.unsplash.com/photo-1766456127047-806cdecdc139?auto=format&fit=crop&w=200&h=200&q=70" },
+    { codigo: "B1", nombre: "Chicha morada 1L", precio: 10, imagen: "https://images.unsplash.com/photo-1722239315387-5f12ffdf22c0?auto=format&fit=crop&w=200&h=200&q=70" },
+    { codigo: "B2", nombre: "Inca Kola 1.5L", precio: 9, imagen: "https://images.unsplash.com/photo-1571250315503-ecb14720ad5d?auto=format&fit=crop&w=200&h=200&q=70" }
+  ];
+  const $ = (id) => document.getElementById(id);
+  const soles = (n) => "S/ " + n;
+  const buscar = (c) => CARTA.find((p) => p.codigo === c);
+  let tt; function toast(t) { const e = $("toast"); e.textContent = t; e.classList.add("visible"); clearTimeout(tt); tt = setTimeout(() => e.classList.remove("visible"), 2200); }
+  const hora = () => new Date().toLocaleTimeString("es-PE", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "America/Lima" });
+
+  /* ---- carrito compartido con la carta (mismo navegador) ---- */
+  function cargarCarrito() { try { const o = JSON.parse(localStorage.getItem("saborHuancaCarrito") || "{}"), r = {}; Object.keys(o).forEach((c) => { if (buscar(c) && o[c] > 0) r[c] = Math.min(20, o[c] | 0); }); return r; } catch (e) { return {}; } }
+  const carrito = cargarCarrito(); let modalidad = "Recojo en tienda", pago = "Yape";
+  const guardar = () => { try { localStorage.setItem("saborHuancaCarrito", JSON.stringify(carrito)); } catch (e) {} };
+  function pintarPlatos() {
+    $("platos").innerHTML = CARTA.map((p) => `<div class="plato"><div class="f"><img src="${p.imagen}" alt="" loading="lazy" onerror="this.remove()" /></div><div><b>${p.nombre}</b><span class="p num">${soles(p.precio)}</span></div><div class="paso num"><button type="button" data-c="${p.codigo}" data-d="-1" aria-label="Quitar ${p.nombre}">−</button><span aria-live="polite">${carrito[p.codigo] || 0}</span><button type="button" data-c="${p.codigo}" data-d="1" aria-label="Añadir ${p.nombre}">+</button></div></div>`).join("");
+  }
+  function totales() { const sub = Object.entries(carrito).reduce((s, [c, q]) => s + buscar(c).precio * q, 0), del = modalidad === "Delivery" && sub > 0 ? COSTO_DELIVERY : 0; return { sub, del, total: sub + del }; }
+  function pintarTotales() { const t = totales(), n = Object.values(carrito).reduce((a, b) => a + b, 0); $("sub").textContent = soles(t.sub); $("del").textContent = soles(t.del); $("tot").textContent = soles(t.total); $("cnt").textContent = n; $("btnEnv").disabled = !n; guardar(); }
+  $("platos").addEventListener("click", (e) => { const b = e.target.closest("button[data-c]"); if (!b) return; const c = b.dataset.c, q = Math.max(0, Math.min(20, (carrito[c] || 0) + +b.dataset.d)); if (q) carrito[c] = q; else delete carrito[c]; b.parentNode.querySelector("span").textContent = q; $("aviso").textContent = ""; pintarTotales(); });
+  function seg(id, fn) { $(id).querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { $(id).querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b)); fn(b.dataset.v); })); }
+  seg("segMod", (v) => { modalidad = v; $("direccion").style.display = v === "Delivery" ? "block" : "none"; pintarTotales(); });
+  seg("segPago", (v) => (pago = v));
+  $("btnVaciar").addEventListener("click", () => { Object.keys(carrito).forEach((k) => delete carrito[k]); pintarPlatos(); pintarTotales(); toast("Pedido vaciado"); });
+  $("btnEnv").addEventListener("click", () => {
+    const items = Object.entries(carrito); if (!items.length) return;
+    const dir = $("direccion").value.trim();
+    if (modalidad === "Delivery" && !dir) { $("aviso").textContent = "Escribe tu dirección para el delivery."; $("direccion").focus(); return; }
+    let m = "PEDIDO WEB: " + items.map(([c, q]) => `${q}x ${buscar(c).nombre}`).join("; ") + " | Modalidad: " + modalidad;
+    if (modalidad === "Delivery") m += " | Dirección: " + dir;
+    m += " | Pago: " + pago;
+    mostrarVista("chat"); toast("Pedido enviado al asistente"); enviar(m);
+  });
+
+  /* ---- sesión e historial compartidos con la carta ---- */
+  const HK = "saborHuancaHistorial";
+  function obtenerSesion() { let id = null; try { id = localStorage.getItem("saborHuancaSessionId"); } catch (e) {} if (!id) { id = crypto.randomUUID ? crypto.randomUUID() : "s-" + Date.now() + "-" + Math.random().toString(16).slice(2); try { localStorage.setItem("saborHuancaSessionId", id); } catch (e) {} } return id; }
+  let SESION = obtenerSesion(), historial = []; try { historial = JSON.parse(localStorage.getItem(HK) || "[]"); } catch (e) {}
+  const guardarH = () => { try { localStorage.setItem(HK, JSON.stringify(historial.slice(-60))); } catch (e) {} };
+  const pintarCod = () => { $("cod").textContent = SESION.replace(/[^a-z0-9]/gi, "").slice(-4).toUpperCase(); };
+
+  function md(texto) {
+    const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const li = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*])\*(?!\s)(.+?)\*/g, "$1<em>$2</em>");
+    let h = "", l = false;
+    texto.split("\n").forEach((x) => { const m = x.match(/^\s*[-•*]\s+(.*)/); if (m) { if (!l) { h += "<ul>"; l = true; } h += `<li>${li(m[1])}</li>`; } else { if (l) { h += "</ul>"; l = false; } if (x.trim()) h += `<p>${li(x)}</p>`; } });
+    return h + (l ? "</ul>" : "");
+  }
+  function burbuja(tipo, texto, etiqueta, restaurando, hh) {
+    if (!restaurando) { hh = hora(); historial.push({ tipo, texto, etiqueta, hh }); guardarH(); }
+    const m = document.createElement("div"); m.className = "msg " + tipo;
+    const b = document.createElement("div"); b.className = "burbuja"; if (tipo === "asistente") b.innerHTML = md(texto); else b.textContent = texto; m.appendChild(b);
+    if (etiqueta) { const e = document.createElement("span"); e.className = "tag"; e.textContent = etiqueta; m.appendChild(e); }
+    const t = document.createElement("span"); t.className = "hora"; t.textContent = hh || hora(); m.appendChild(t);
+    $("mensajes").appendChild(m); $("mensajes").scrollTop = $("mensajes").scrollHeight; return m;
+  }
+  const BIENVENIDA = "¡Hola! Bienvenido a **Sabor Huanca**.\nPuedo ayudarte con:\n- Hacer un pedido, por nombre o código (ejemplo: *2 P1 y 1 B1*)\n- Registrar un reclamo o una queja\n- Horario, dirección y delivery\n¿En qué te ayudo?";
+  function iniciarChat() { $("mensajes").innerHTML = ""; if (historial.length) historial.forEach((h) => burbuja(h.tipo, h.texto, h.etiqueta, true, h.hh)); else burbuja("asistente", BIENVENIDA); }
+
+  const RAPIDAS = [["Ver carta", "Quiero ver la carta"], ["Hacer un pedido", "Quiero hacer un pedido"], ["Hacer un reclamo", "Quiero hacer un reclamo"], ["Horario y delivery", "¿Cuál es su horario y a qué zonas hacen delivery?"], ["Sí, confirmo", "SÍ, confirmo"]];
+  $("rapidas").innerHTML = RAPIDAS.map((r, i) => `<button type="button" data-i="${i}">${r[0]}</button>`).join("");
+  $("rapidas").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) enviar(RAPIDAS[+b.dataset.i][1]); });
+  $("form").addEventListener("submit", (e) => { e.preventDefault(); const t = $("entrada").value; $("entrada").value = ""; enviar(t); });
+
+  let enviando = false;
+  async function enviar(texto, reintento) {
+    texto = (texto || "").trim(); if (!texto || enviando) return;
+    enviando = true; $("btnSend").disabled = true;
+    if (!reintento) burbuja("cliente", texto);
+    const esc = document.createElement("div"); esc.className = "msg asistente"; esc.innerHTML = `<div class="burbuja"><div class="escribiendo" aria-label="El asistente está escribiendo"><i></i><i></i><i></i></div></div>`; $("mensajes").appendChild(esc); $("mensajes").scrollTop = $("mensajes").scrollHeight;
+    const ctl = new AbortController(), tope = setTimeout(() => ctl.abort(), 60000);
+    try {
+      const r = await fetch(N8N_CHAT_WEBHOOK_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "sendMessage", sessionId: SESION, chatInput: texto }), signal: ctl.signal });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const d = await r.json(), out = Array.isArray(d) ? d[0]?.output : d.output; esc.remove();
+      const ag = /Agente de (Ventas|Reclamos|Informaci[oó]n)/i.exec(out || "");
+      burbuja("asistente", out || "No recibí respuesta del asistente. Inténtalo de nuevo.", ag ? "Agente de " + ag[1] : "");
+      $("vivo").classList.remove("off"); $("estado").textContent = "En línea, responde en segundos";
+    } catch (err) {
+      console.error(err); esc.remove(); $("vivo").classList.add("off"); $("estado").textContent = "Sin conexión";
+      const m = burbuja("asistente", "No pude conectar con el asistente. Revisa tu conexión e inténtalo de nuevo.");
+      const b = document.createElement("button"); b.type = "button"; b.className = "reintentar"; b.textContent = "Reintentar"; b.onclick = () => { m.remove(); b.remove(); enviar(texto, true); }; $("mensajes").appendChild(b);
+    } finally { clearTimeout(tope); enviando = false; $("btnSend").disabled = false; if (matchMedia("(min-width:861px)").matches) $("entrada").focus(); }
+  }
+  $("btnNueva").addEventListener("click", () => { if (enviando) return; try { localStorage.removeItem("saborHuancaSessionId"); localStorage.removeItem(HK); } catch (e) {} SESION = obtenerSesion(); historial = []; pintarCod(); iniciarChat(); toast("Nueva conversación"); });
+
+  function mostrarVista(v) { $("app").dataset.v = v; document.querySelectorAll(".pestanas button").forEach((b) => b.setAttribute("aria-selected", b.dataset.v === v)); }
+  document.querySelectorAll(".pestanas button").forEach((b) => b.addEventListener("click", () => mostrarVista(b.dataset.v)));
+
+  pintarPlatos(); pintarTotales(); pintarCod(); iniciarChat();
+</script>
+</body>
+</html>

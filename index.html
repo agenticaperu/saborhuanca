@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#130B09" />
+<title>La carta | Sabor Huanca, cocina andina en Huancayo</title>
+<meta name="description" content="Carta de Sabor Huanca: pollo a la brasa, pachamanca y trucha. Pide en línea o con el asistente de IA." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500;1,9..144,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* =========================================================
+     SISTEMA DE DISEÑO: carta nocturna, brasa y ají amarillo
+     ========================================================= */
+  :root {
+    --fondo: #130B09;
+    --panel: #1C110D;
+    --panel-2: #26170F;
+    --borde: #3B2519;
+    --texto: #EFE3D0;
+    --suave: #A8977F;
+    --oro: #F2B33D;
+    --oro-osc: #C98F17;
+    --vino: #9E2A1D;
+    --vino-osc: #7F2016;
+    --serif: "Fraunces", Georgia, "Times New Roman", serif;
+    --sans: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --cab: 76px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: calc(var(--cab) + 10px); }
+  body { background: var(--fondo); color: var(--texto); font-family: var(--sans); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+  input { font: inherit; color: inherit; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--oro); outline-offset: 3px; }
+  .num { font-variant-numeric: tabular-nums; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ===== Cabecera ===== */
+  .cab { position: fixed; inset: 0 0 auto 0; z-index: 40; height: var(--cab); background: linear-gradient(180deg, rgba(19,11,9,.96), rgba(19,11,9,.72)); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(59,37,25,.6); }
+  .cab-in { max-width: 1200px; height: 100%; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; gap: 14px; }
+  .marca { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .marca b { font-family: var(--serif); font-style: italic; font-weight: 700; font-size: 1.5rem; letter-spacing: -.01em; }
+  .marca small { display: block; font-size: .72rem; color: var(--suave); margin-top: -4px; }
+  .cab-acciones { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .btn-icono { position: relative; width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--borde); }
+  .btn-icono:hover { border-color: var(--oro); }
+  .insignia { position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: var(--oro); color: #1b0f08; font-size: .74rem; font-weight: 700; display: grid; place-items: center; }
+  .btn-borde { min-height: 46px; padding: 0 22px; border: 1px solid var(--texto); border-radius: 4px; font-size: .86rem; font-weight: 600; letter-spacing: .04em; transition: background .15s, color .15s; }
+  .btn-borde:hover { background: var(--texto); color: var(--fondo); }
+
+  /* ===== Título, búsqueda y filtros ===== */
+  .contenedor { max-width: 1200px; margin: 0 auto; padding: calc(var(--cab) + 64px) 20px 72px; }
+  h1.titulo { font-family: var(--serif); font-weight: 700; font-size: clamp(2.6rem, 7vw, 4.8rem); line-height: 1; letter-spacing: -.025em; }
+  h1.titulo em { color: var(--vino); color: #C8442F; font-weight: 500; }
+  .sub { color: var(--suave); margin-top: 14px; max-width: 36em; }
+  .busca { position: relative; margin-top: 30px; max-width: 520px; }
+  .busca svg { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--suave); }
+  .busca input { width: 100%; height: 52px; padding: 0 20px 0 48px; border-radius: 999px; background: var(--panel); border: 1px solid var(--borde); }
+  .busca input::placeholder { color: var(--suave); }
+  .busca input:focus { outline: none; border-color: var(--oro); }
+  .filtros { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 40px; }
+  .filtros button { min-height: 44px; padding: 0 20px; border: 1px solid var(--borde); border-radius: 4px; background: var(--panel); font-size: .82rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; transition: border-color .15s, color .15s; }
+  .filtros button:hover { border-color: var(--suave); }
+  .filtros button.activo { border-color: var(--oro); color: var(--oro); background: rgba(242,179,61,.08); }
+
+  /* ===== Tarjetas ===== */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 26px; }
+  .tarjeta { background: linear-gradient(180deg, var(--panel-2), var(--panel)); border: 1px solid var(--borde); border-radius: 22px; padding: 8px 8px 20px; display: flex; flex-direction: column; transition: border-color .2s, transform .2s; }
+  .tarjeta:hover { border-color: #5a3826; transform: translateY(-3px); }
+  .foto { position: relative; aspect-ratio: 4 / 3; border-radius: 16px; overflow: hidden; background: #2a1a12; }
+  .foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .foto svg { width: 100%; height: 100%; display: block; }
+  .etiqueta { position: absolute; top: 12px; left: 12px; padding: 5px 12px; border-radius: 999px; background: rgba(19,11,9,.82); border: 1px solid #5a3826; color: var(--oro); font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  .cuerpo { padding: 18px 14px 0; display: flex; flex-direction: column; flex: 1; }
+  .fila-tit { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .cuerpo h3 { font-family: var(--serif); font-weight: 700; font-size: 1.3rem; line-height: 1.2; }
+  .precio { font-family: var(--serif); font-weight: 700; font-size: 1.25rem; color: var(--oro); white-space: nowrap; }
+  .cod { font-size: .75rem; color: var(--suave); font-weight: 600; margin-top: 2px; }
+  .desc { color: var(--suave); font-size: .93rem; margin: 10px 0 18px; flex: 1; }
+  .ctl { min-height: 46px; }
+  .anadir { width: 100%; min-height: 46px; border-radius: 10px; background: var(--vino); font-weight: 700; letter-spacing: .02em; transition: background .15s; }
+  .anadir:hover { background: #B8331F; }
+  .paso { display: flex; align-items: center; justify-content: space-between; min-height: 46px; border: 1px solid var(--oro); border-radius: 10px; overflow: hidden; }
+  .paso button { width: 56px; align-self: stretch; font-size: 1.3rem; font-weight: 700; color: var(--oro); }
+  .paso button:hover { background: rgba(242,179,61,.14); }
+  .paso span { font-weight: 700; font-size: 1.05rem; }
+  .preguntar { margin-top: 14px; align-self: center; color: var(--oro); font-size: .86rem; font-weight: 600; text-decoration: none; }
+  .preguntar:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .vacio-busqueda { color: var(--suave); padding: 28px 0; }
+
+  /* ===== Cajón del pedido ===== */
+  .velo { position: fixed; inset: 0; z-index: 80; background: rgba(0,0,0,.6); opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .velo.abierto { opacity: 1; pointer-events: auto; }
+  .cajon { position: fixed; top: 0; right: 0; bottom: 0; z-index: 90; width: min(100%, 430px); background: var(--panel); border-left: 1px solid var(--borde); transform: translateX(104%); transition: transform .25s; display: flex; flex-direction: column; }
+  .cajon.abierto { transform: translateX(0); }
+  .cajon-cab { display: flex; align-items: center; justify-content: space-between; padding: 20px 22px; border-bottom: 1px solid var(--borde); }
+  .cajon-cab h2 { font-family: var(--serif); font-size: 1.6rem; }
+  .cajon-cab button { width: 44px; height: 44px; font-size: 1.3rem; border-radius: 50%; }
+  .cajon-cab button:hover { background: var(--panel-2); }
+  .cajon-cuerpo { flex: 1; overflow-y: auto; padding: 8px 22px 20px; }
+  .lista { list-style: none; }
+  .lista li { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; padding: 14px 0; border-bottom: 1px solid var(--borde); }
+  .lista .linea-pie { display: flex; align-items: center; gap: 10px; }
+  .lista .linea-pie button { width: 32px; height: 32px; border: 1px solid var(--borde); border-radius: 8px; font-weight: 700; }
+  .lista .linea-pie button:hover { border-color: var(--oro); color: var(--oro); }
+  .lista .vacio { display: block; color: var(--suave); padding: 22px 0; }
+  .campo-titulo { display: block; font-weight: 700; font-size: .9rem; margin: 20px 0 8px; }
+  .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; }
+  .seg button { min-height: 46px; padding: 8px; border: 1px solid var(--borde); border-radius: 10px; background: var(--panel-2); font-size: .88rem; font-weight: 600; }
+  .seg button.activo { border-color: var(--oro); color: var(--oro); background: rgba(242,179,61,.1); }
+  #direccion { display: none; width: 100%; margin-top: 10px; min-height: 48px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--borde); background: var(--panel-2); }
+  #direccion:focus { outline: none; border-color: var(--oro); }
+  .cajon-pie { padding: 18px 22px 22px; border-top: 1px solid var(--borde); background: var(--panel-2); }
+  .totales div { display: flex; justify-content: space-between; padding: 3px 0; color: var(--suave); }
+  .totales .total { color: var(--texto); font-family: var(--serif); font-weight: 700; font-size: 1.6rem; padding-top: 8px; margin-top: 6px; border-top: 1px solid var(--borde); }
+  .btn-enviar { width: 100%; min-height: 54px; margin-top: 14px; border-radius: 10px; background: var(--oro); color: #1b0f08; font-weight: 700; font-size: 1rem; }
+  .btn-enviar:hover { background: #FFC85A; }
+  .btn-enviar[disabled] { opacity: .4; cursor: not-allowed; }
+  .aviso { color: #ff8a73; font-size: .88rem; font-weight: 600; margin-top: 8px; min-height: 1.2em; }
+
+  /* ===== Agentes ===== */
+  .agentes { background: var(--panel); border-top: 1px solid var(--borde); }
+  .agentes-in { max-width: 1200px; margin: 0 auto; padding: 80px 20px; }
+  .agentes h2 { font-family: var(--serif); font-weight: 700; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.05; letter-spacing: -.02em; }
+  .agentes h2 em { color: #C8442F; font-weight: 500; }
+  .agentes .sub { color: var(--suave); }
+  .agentes-grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: 48px; margin-top: 44px; align-items: start; }
+  .nodo { background: var(--fondo); border: 1px solid var(--borde); border-radius: 14px; padding: 16px 18px; transition: background .25s, border-color .25s, color .25s, box-shadow .25s; }
+  .nodo h4 { font-family: var(--serif); font-size: 1.1rem; font-weight: 700; }
+  .nodo p { font-size: .9rem; color: var(--suave); margin-top: 4px; }
+  .nodo.activo { background: var(--oro); color: #1b0f08; border-color: var(--oro); box-shadow: 0 0 0 6px rgba(242,179,61,.2); }
+  .nodo.activo p, .nodo.activo .guarda { color: #3a2410; }
+  .nodo.pensando { border-color: var(--oro); animation: latido 1s ease-in-out infinite; }
+  @keyframes latido { 50% { box-shadow: 0 0 0 7px rgba(242,179,61,.25); } }
+  .orq-wrap { position: relative; display: flex; justify-content: center; margin-bottom: 40px; }
+  .orq-wrap .nodo { width: min(100%, 340px); text-align: center; }
+  .orq-wrap::after { content: ""; position: absolute; top: 100%; left: 50%; width: 1px; height: 20px; background: var(--borde); }
+  .ramas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; position: relative; }
+  .ramas::before { content: ""; position: absolute; top: -20px; left: 16.66%; right: 16.66%; height: 1px; background: var(--borde); }
+  .ramas .nodo { position: relative; }
+  .ramas .nodo::before { content: ""; position: absolute; top: -20px; left: 50%; width: 1px; height: 20px; background: var(--borde); }
+  .guarda { display: block; margin-top: 10px; font-size: .8rem; font-weight: 600; color: var(--oro); }
+  .registro { background: var(--fondo); border: 1px solid var(--borde); border-radius: 14px; padding: 20px; }
+  .registro h4 { font-family: var(--serif); font-size: 1.15rem; margin-bottom: 12px; }
+  .registro ol { list-style: none; display: grid; gap: 10px; }
+  .registro li { display: grid; grid-template-columns: 62px 1fr; gap: 10px; font-size: .9rem; }
+  .registro time { color: var(--oro); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .registro .vacio { display: block; color: var(--suave); }
+
+  footer { border-top: 1px solid var(--borde); }
+  footer .cuerpo-pie { max-width: 1200px; margin: 0 auto; padding: 36px 20px 150px; display: flex; flex-wrap: wrap; gap: 18px 48px; justify-content: space-between; color: var(--suave); font-size: .9rem; }
+  footer .cuerpo-pie p { max-width: 40em; }
+
+  /* ===== Chat ===== */
+  .chat-fab { position: fixed; right: 22px; bottom: 64px; z-index: 60; width: 62px; height: 62px; border-radius: 50%; background: var(--oro); color: #1b0f08; display: grid; place-items: center; box-shadow: 0 8px 28px rgba(0,0,0,.5); transition: transform .15s; }
+  .chat-fab:hover { transform: scale(1.05); }
+  .chat { position: fixed; right: 22px; bottom: 140px; z-index: 70; width: 390px; max-width: calc(100vw - 24px); height: 600px; max-height: calc(100vh - 160px); background: var(--panel); border: 1px solid var(--borde); border-radius: 20px; box-shadow: 0 18px 60px rgba(0,0,0,.65); display: none; flex-direction: column; overflow: hidden; }
+  .chat.abierto { display: flex; }
+  .chat-head { padding: 14px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--borde); background: var(--panel-2); }
+  .chat-head .info { flex: 1; }
+  .chat-head strong { display: block; font-family: var(--serif); font-size: 1.05rem; }
+  .chat-head small { color: var(--suave); }
+  .chat-head button { width: 40px; height: 40px; font-size: 1.2rem; border-radius: 50%; }
+  .chat-head button:hover { background: var(--fondo); }
+  .mensajes { flex: 1; overflow-y: auto; padding: 16px; background: var(--fondo); display: flex; flex-direction: column; gap: 12px; }
+  .msg { display: flex; flex-direction: column; gap: 5px; max-width: 88%; }
+  .msg.cliente { align-self: flex-end; align-items: flex-end; }
+  .msg.asistente { align-self: flex-start; }
+  .burbuja { padding: 10px 14px; border-radius: 16px; font-size: .95rem; word-wrap: break-word; }
+  .cliente .burbuja { background: var(--oro); color: #1b0f08; border-bottom-right-radius: 4px; }
+  .asistente .burbuja { background: var(--panel-2); border: 1px solid var(--borde); border-bottom-left-radius: 4px; }
+  .burbuja p { margin: 2px 0; }
+  .burbuja ul { padding-left: 20px; margin: 4px 0; }
+  .etiqueta-agente { align-self: flex-start; font-size: .75rem; font-weight: 700; color: var(--oro); border: 1px solid var(--oro-osc); padding: 2px 10px; border-radius: 999px; }
+  .escribiendo { display: flex; gap: 4px; align-items: center; }
+  .escribiendo i { width: 7px; height: 7px; background: var(--oro); border-radius: 50%; animation: salto 1s infinite; }
+  .escribiendo i:nth-child(2) { animation-delay: .15s; }
+  .escribiendo i:nth-child(3) { animation-delay: .3s; }
+  @keyframes salto { 0%, 60%, 100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-5px); opacity: 1; } }
+  .rapidas { display: flex; gap: 6px; overflow-x: auto; padding: 10px 12px; border-top: 1px solid var(--borde); background: var(--panel); }
+  .rapidas button { white-space: nowrap; min-height: 36px; padding: 0 14px; border: 1px solid var(--borde); border-radius: 999px; font-size: .84rem; font-weight: 600; }
+  .rapidas button:hover { border-color: var(--oro); color: var(--oro); }
+  .chat-form { display: flex; gap: 8px; padding: 10px 12px 12px; background: var(--panel); }
+  .chat-form input { flex: 1; min-width: 0; min-height: 46px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--borde); background: var(--fondo); }
+  .chat-form input:focus { outline: none; border-color: var(--oro); }
+  .chat-form button { flex: none; min-height: 46px; padding: 0 20px; border-radius: 999px; background: var(--vino); font-weight: 700; }
+  .chat-form button:hover { background: #B8331F; }
+
+  .vaciar { display: block; margin: 10px auto 0; color: var(--suave); font-size: .86rem; text-decoration: underline; text-underline-offset: 3px; min-height: 32px; }
+  .vaciar:hover { color: var(--oro); }
+  .chat-head .info small b { color: var(--oro); letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+  .chat-head .hb { width: 36px; height: 36px; font-size: 1.05rem; border-radius: 50%; display: grid; place-items: center; text-decoration: none; color: var(--suave); }
+  .chat-head .hb:hover { background: var(--fondo); color: var(--oro); }
+  .reintentar { align-self: flex-start; min-height: 36px; padding: 0 16px; border: 1px solid var(--oro); border-radius: 999px; color: var(--oro); font-weight: 700; font-size: .86rem; }
+  .reintentar:hover { background: rgba(242,179,61,.12); }
+  .chat-form button[disabled] { opacity: .5; cursor: wait; }
+  .toast { position: fixed; left: 50%; bottom: 150px; transform: translate(-50%, 20px); background: var(--texto); color: var(--fondo); padding: 11px 18px; border-radius: 10px; font-weight: 600; z-index: 120; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; max-width: calc(100vw - 32px); }
+  .toast.visible { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 900px) {
+    .agentes-grid { grid-template-columns: 1fr; }
+    .chat { right: 8px; bottom: 132px; height: calc(100vh - 150px); }
+    .chat-fab { right: 14px; bottom: 60px; width: 58px; height: 58px; }
+    .toast { bottom: auto; top: calc(var(--cab) + 12px); transform: translate(-50%, -20px); }
+    .toast.visible { transform: translate(-50%, 0); }
+  }
+  @media (max-width: 620px) {
+    .btn-borde { display: none; }
+    .grid { grid-template-columns: 1fr; }
+    .ramas { grid-template-columns: 1fr; gap: 14px; }
+    .ramas::before, .ramas .nodo::before, .orq-wrap::after { display: none; }
+    .orq-wrap { margin-bottom: 14px; }
+    .contenedor { padding-top: calc(var(--cab) + 40px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ======================= CABECERA ======================= -->
+<header class="cab">
+  <div class="cab-in">
+    <a href="#inicio" class="marca" aria-label="Sabor Huanca, inicio">
+      <svg width="40" height="40" viewBox="0 0 34 34" aria-hidden="true">
+        <circle cx="17" cy="17" r="16" fill="#F2B33D"/><circle cx="17" cy="17" r="8" fill="#C8281E"/>
+        <g stroke="#130B09" stroke-width="2" stroke-linecap="round"><path d="M17 1.5v4M17 28.5v4M1.5 17h4M28.5 17h4M6 6l2.8 2.8M25.2 25.2L28 28M28 6l-2.8 2.8M8.8 25.2L6 28"/></g>
+      </svg>
+      <span><b>Sabor Huanca</b><small>Cocina andina, Huancayo</small></span>
+    </a>
+    <div class="cab-acciones">
+      <button class="btn-icono" onclick="abrirCajon()" aria-label="Abrir mi pedido">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+        <span class="insignia num" id="contadorNav">0</span>
+      </button>
+      <button class="btn-borde" onclick="abrirChat()">CHATEAR CON EL ASISTENTE</button>
+    </div>
+  </div>
+</header>
+
+<!-- ======================= CARTA ======================= -->
+<main class="contenedor" id="inicio">
+  <h1 class="titulo">La <em>carta</em> de Sabor Huanca</h1>
+  <p class="sub">Cocina del Valle del Mantaro. Agrega tus platos, envía el pedido al asistente y un equipo de agentes de IA lo confirma.</p>
+
+  <div class="busca">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <label class="sr" for="buscador">Buscar por plato o ingrediente</label>
+    <input id="buscador" type="search" placeholder="Buscar por plato o ingrediente" autocomplete="off" />
+  </div>
+  <div class="filtros" id="filtros" role="group" aria-label="Categorías"></div>
+
+  <div class="grid" id="grid" aria-live="polite"></div>
+</main>
+
+<!-- ======================= AGENTES ======================= -->
+<section class="agentes" id="agentes">
+  <div class="agentes-in">
+    <h2>Así se <em>atiende</em> tu pedido</h2>
+    <p class="sub" style="margin-top:12px;max-width:38em">Cada mensaje pasa primero por el Orquestador, que decide qué agente lo atiende. Escribe en el chat y mira cuál se enciende.</p>
+
+    <div class="agentes-grid">
+      <div>
+        <div class="orq-wrap">
+          <div class="nodo" id="nodo-orquestador"><h4>Orquestador</h4><p>Entiende lo que pides y lo deriva al agente correcto.</p></div>
+        </div>
+        <div class="ramas">
+          <div class="nodo" id="nodo-ventas"><h4>Agente de Ventas</h4><p>Toma pedidos y calcula el total.</p><span class="guarda">Guarda en la tabla pedidos</span></div>
+          <div class="nodo" id="nodo-reclamos"><h4>Agente de Reclamos</h4><p>Registra reclamos y quejas, y entrega un código.</p><span class="guarda">Guarda en la tabla reclamos</span></div>
+          <div class="nodo" id="nodo-informacion"><h4>Agente de Información</h4><p>Responde horario, dirección, delivery y pagos.</p><span class="guarda">Responde con la carta</span></div>
+        </div>
+      </div>
+      <div class="registro">
+        <h4>Registro en vivo</h4>
+        <ol id="registro"><li class="vacio">Aún no hay mensajes. Escribe en el chat o envía un pedido.</li></ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="cuerpo-pie">
+    <div>
+      <strong style="color:var(--texto);font-family:var(--serif);font-style:italic;font-size:1.2rem">Sabor Huanca</strong>
+      <p style="margin-top:8px">Jr. Real 123, Huancayo. Lunes a domingo, 11:00 a.m. a 10:00 p.m. Delivery en el centro de Huancayo, El Tambo y Chilca. Pagos con Yape, Plin, efectivo y tarjeta.</p>
+    </div>
+    <p>Precios en soles, incluyen IGV. Fotos de ejemplo: Unsplash (licencia gratuita). Demostración de un sistema multiagente con IA construido en n8n: un Orquestador y tres agentes especialistas.</p>
+  </div>
+</footer>
+
+<!-- ======================= CAJÓN DEL PEDIDO ======================= -->
+<div class="velo" id="velo" onclick="cerrarCajon()"></div>
+<aside class="cajon" id="cajon" aria-label="Tu pedido" aria-hidden="true" inert>
+  <div class="cajon-cab">
+    <h2>Tu pedido</h2>
+    <button onclick="cerrarCajon()" aria-label="Cerrar pedido">✕</button>
+  </div>
+  <div class="cajon-cuerpo">
+    <ul class="lista" id="lista"></ul>
+
+    <span class="campo-titulo">Modalidad</span>
+    <div class="seg" id="segModalidad">
+      <button data-valor="Delivery">Delivery (+S/ 5)</button>
+      <button data-valor="Recojo en tienda" class="activo">Recojo en tienda</button>
+    </div>
+    <input id="direccion" type="text" placeholder="Dirección (centro de Huancayo, El Tambo o Chilca)" aria-label="Dirección de entrega" />
+
+    <span class="campo-titulo">Medio de pago</span>
+    <div class="seg" id="segPago">
+      <button data-valor="Yape" class="activo">Yape</button>
+      <button data-valor="Plin">Plin</button>
+      <button data-valor="Efectivo">Efectivo</button>
+    </div>
+  </div>
+  <div class="cajon-pie">
+    <div class="totales num">
+      <div><span>Subtotal</span><span id="subtotal">S/ 0</span></div>
+      <div><span>Delivery</span><span id="costoDelivery">S/ 0</span></div>
+      <div class="total"><span>Total</span><span id="total">S/ 0</span></div>
+    </div>
+    <button class="btn-enviar" id="btnEnviar" onclick="enviarPedido()">Enviar pedido al asistente</button>
+    <p class="aviso" id="aviso" role="status"></p>
+    <button type="button" class="vaciar" onclick="vaciarPedido()">Vaciar pedido</button>
+  </div>
+</aside>
+
+<!-- ======================= CHAT ======================= -->
+<button class="chat-fab" id="chatFab" onclick="toggleChat()" aria-label="Abrir chat con el asistente">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.6-.8L3 21l1.9-5.1A8.4 8.4 0 1 1 21 11.5z"/></svg>
+</button>
+
+<section class="chat" id="chat" aria-label="Chat con el asistente">
+  <div class="chat-head">
+    <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="16" fill="#F2B33D"/><circle cx="17" cy="17" r="8" fill="#C8281E"/></svg>
+    <div class="info"><strong>Asistente Sabor Huanca</strong><small>Agentes de IA · Chat <b id="chatCod">----</b></small></div>
+    <button class="hb" type="button" onclick="nuevaConversacion()" title="Nueva conversación" aria-label="Nueva conversación">↻</button>
+    <a class="hb" href="chat.html" target="_blank" rel="noopener" title="Abrir el chat en pantalla completa" aria-label="Abrir el chat en pantalla completa">⤢</a>
+    <button class="hb" type="button" onclick="toggleChat()" aria-label="Cerrar chat">✕</button>
+  </div>
+  <div class="mensajes" id="mensajes" aria-live="polite"></div>
+  <div class="rapidas" id="rapidas"></div>
+  <form class="chat-form" id="chatForm">
+    <input id="chatInput" type="text" placeholder="Escribe tu mensaje" autocomplete="off" aria-label="Mensaje" />
+    <button type="submit">Enviar</button>
+  </form>
+</section>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+  /* =========================================================
+     1) CONFIGURACIÓN
+     Production URL del Chat Trigger de n8n (termina en /chat).
+     El workflow debe estar PUBLICADO.
+     ========================================================= */
+  const N8N_CHAT_WEBHOOK_URL =
+    "https://universidadcontinental.app.n8n.cloud/webhook/af929cdc-2ac9-4760-b692-05355cfc9eb5/chat";
+  const COSTO_DELIVERY = 5; // soles
+
+  /* =========================================================
+     2) CARTA EDITABLE
+     - "imagen": URL o ruta de la foto del plato (por ejemplo "fotos/pollo.jpg").
+       Ahora usan fotos de ejemplo de Unsplash. Para usar las tuyas, reemplaza la URL.
+       Si lo dejas vacío o la foto no carga, se muestra una ilustración.
+     - Si cambias precios o platos, cámbialos también en los prompts de n8n.
+     ========================================================= */
+  const CATEGORIAS = [
+    { id: "platos",   nombre: "Platos" },
+    { id: "entradas", nombre: "Entradas" },
+    { id: "bebidas",  nombre: "Bebidas" },
+  ];
+  const CARTA = [
+    { codigo: "P1", nombre: "Pollo a la brasa 1/4", precio: 18, categoria: "platos",   etiqueta: "Clásico de la casa",
+      descripcion: "Cuarto de pollo a la brasa, jugoso y dorado, con su guarnición.", imagen: "https://images.unsplash.com/photo-1564436872-f6d81182df12?auto=format&fit=crop&w=900&h=675&q=75" },
+    { codigo: "P2", nombre: "Pollo a la brasa 1/2", precio: 34, categoria: "platos",   etiqueta: "Para compartir",
+      descripcion: "Medio pollo a la brasa para compartir entre dos, con su guarnición.", imagen: "https://images.unsplash.com/photo-1643886027883-1a23fe41ee2a?auto=format&fit=crop&w=900&h=675&q=75" },
+    { codigo: "P3", nombre: "Pachamanca personal",  precio: 28, categoria: "platos",   etiqueta: "Tradición andina",
+      descripcion: "Carnes y tubérculos cocidos al estilo de la pachamanca, en porción personal.", imagen: "https://images.unsplash.com/photo-1535400255456-984241443b29?auto=format&fit=crop&w=900&h=675&q=75" },
+    { codigo: "P4", nombre: "Trucha frita",         precio: 25, categoria: "platos",   etiqueta: "Del valle",
+      descripcion: "Trucha frita, crocante por fuera y suave por dentro.", imagen: "https://images.unsplash.com/photo-1548704087-b11dab0fbec0?auto=format&fit=crop&w=900&h=675&q=75" },
+    { codigo: "E1", nombre: "Papa a la huancaína",  precio: 12, categoria: "entradas", etiqueta: "Entrada",
+      descripcion: "Papa sancochada bañada en cremosa salsa huancaína.", imagen: "https://images.unsplash.com/photo-1766456127047-806cdecdc139?auto=format&fit=crop&w=900&h=675&q=75" },
+    { codigo: "B1", nombre: "Chicha morada 1L",     precio: 10, categoria: "bebidas",  etiqueta: "Bebida de la casa",
+      descripcion: "Chicha morada fría, de maíz morado, en jarra de un litro.", imagen: "https://images.unsplash.com/photo-1722239315387-5f12ffdf22c0?auto=format&fit=crop&w=900&h=675&q=75" },
+    { codigo: "B2", nombre: "Inca Kola 1.5L",       precio: 9,  categoria: "bebidas",  etiqueta: "Bebida",
+      descripcion: "Inca Kola bien fría, botella familiar de 1.5 litros.", imagen: "https://images.unsplash.com/photo-1571250315503-ecb14720ad5d?auto=format&fit=crop&w=900&h=675&q=75" },
+  ];
+
+  /* =========================================================
+     3) ESTADO Y UTILIDADES
+     ========================================================= */
+  function cargarCarrito() {
+    try { const o = JSON.parse(localStorage.getItem("saborHuancaCarrito") || "{}"), r = {}; Object.keys(o).forEach((c) => { if (CARTA.some((p) => p.codigo === c) && o[c] > 0) r[c] = Math.min(20, o[c] | 0); }); return r; } catch (e) { return {}; }
+  }
+  function guardarCarrito() { try { localStorage.setItem("saborHuancaCarrito", JSON.stringify(carrito)); } catch (e) {} }
+  const carrito = cargarCarrito();
+  let modalidad = "Recojo en tienda";
+  let pago = "Yape";
+  let filtroActual = "todos";
+  let textoBusqueda = "";
+  const $ = (id) => document.getElementById(id);
+  const soles = (n) => "S/ " + n;
+  const buscar = (c) => CARTA.find((p) => p.codigo === c);
+  const normalizar = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+
+  let toastTimer;
+  function toast(texto) {
+    const t = $("toast");
+    t.textContent = texto;
+    t.classList.add("visible");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("visible"), 2200);
+  }
+
+  /* Ilustración de respaldo cuando un plato no tiene foto */
+  function ilustracion(cat) {
+    const base = `<defs><radialGradient id="g${cat}" cx="50%" cy="45%" r="75%"><stop offset="0" stop-color="#4a2a1b"/><stop offset="1" stop-color="#1c110d"/></radialGradient></defs><rect width="200" height="150" fill="url(#g${cat})"/>`;
+    const trazo = `stroke="#F2B33D" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"`;
+    if (cat === "bebidas") {
+      return `<svg viewBox="0 0 200 150" role="img" aria-label="Ilustración de bebida" preserveAspectRatio="xMidYMid slice">${base}
+        <path d="M72 40h56l-6 82a8 8 0 0 1-8 7H86a8 8 0 0 1-8-7z" ${trazo} fill="#6b1f2e" fill-opacity=".55"/>
+        <path d="M76 70h48" ${trazo}/><path d="M112 40l12-22" ${trazo}/></svg>`;
+    }
+    if (cat === "entradas") {
+      return `<svg viewBox="0 0 200 150" role="img" aria-label="Ilustración de entrada" preserveAspectRatio="xMidYMid slice">${base}
+        <path d="M54 76h92a46 40 0 0 1-92 0z" ${trazo} fill="#2a1a12"/><path d="M70 76c4-18 16-26 30-26s26 8 30 26" ${trazo} fill="#8a6a1a" fill-opacity=".6"/>
+        <path d="M84 46c-4-8 4-10 0-18M104 44c-4-8 4-10 0-18" ${trazo}/></svg>`;
+    }
+    return `<svg viewBox="0 0 200 150" role="img" aria-label="Ilustración de plato" preserveAspectRatio="xMidYMid slice">${base}
+      <circle cx="100" cy="78" r="48" ${trazo} fill="#2a1a12"/><circle cx="100" cy="78" r="34" stroke="#6b4a33" stroke-width="1.4" fill="#3a2418"/>
+      <path d="M40 40v34M35 40v14a5 5 0 0 0 10 0V40M160 40c-8 6-8 24 0 34M160 74v30" ${trazo}/>
+      <path d="M88 70c4-10 20-10 24 0" ${trazo}/></svg>`;
+  }
+
+  // Si una foto no carga, se muestra la ilustración en su lugar
+  function fotoFallo(img, cat) {
+    const caja = document.createElement("div");
+    caja.style.cssText = "width:100%;height:100%";
+    caja.innerHTML = ilustracion(cat);
+    img.replaceWith(caja);
+  }
+
+  /* =========================================================
+     4) CARTA: buscador, filtros y tarjetas
+     ========================================================= */
+  function pintarFiltros() {
+    const opciones = [{ id: "todos", nombre: "Todo" }, ...CATEGORIAS];
+    $("filtros").innerHTML = opciones
+      .map((c) => `<button type="button" class="${c.id === filtroActual ? "activo" : ""}" aria-pressed="${c.id === filtroActual}" onclick="filtrar('${c.id}')">${c.nombre}</button>`)
+      .join("");
+  }
+  function filtrar(id) { filtroActual = id; pintarFiltros(); pintarCarta(); }
+
+  function controlHTML(codigo) {
+    const q = carrito[codigo] || 0;
+    const nombre = buscar(codigo).nombre;
+    if (!q) return `<button class="anadir" data-foco onclick="cambiarCarrito('${codigo}', 1)" aria-label="Añadir ${nombre}">+ Añadir</button>`;
+    return `<div class="paso num">
+      <button onclick="cambiarCarrito('${codigo}', -1)" aria-label="Quitar uno">−</button>
+      <span aria-live="polite">${q} en tu pedido</span>
+      <button data-foco onclick="cambiarCarrito('${codigo}', 1)" aria-label="Añadir uno más">+</button>
+    </div>`;
+  }
+
+  function pintarCarta() {
+    const q = normalizar(textoBusqueda.trim());
+    const lista = CARTA.filter((p) =>
+      (filtroActual === "todos" || p.categoria === filtroActual) &&
+      (!q || normalizar(p.nombre + " " + p.descripcion).includes(q)));
+    if (!lista.length) {
+      $("grid").innerHTML = `<p class="vacio-busqueda">No encontramos platos con esa búsqueda. Prueba con otra palabra o pregúntale al asistente.</p>`;
+      return;
+    }
+    $("grid").innerHTML = lista.map((p) => `
+      <article class="tarjeta">
+        <div class="foto">
+          ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" width="900" height="675" loading="lazy" onerror="fotoFallo(this, '${p.categoria}')" />` : ilustracion(p.categoria)}
+          <span class="etiqueta">${p.etiqueta}</span>
+        </div>
+        <div class="cuerpo">
+          <div class="fila-tit"><h3>${p.nombre}</h3><span class="precio num">${soles(p.precio)}</span></div>
+          <span class="cod">Código ${p.codigo}</span>
+          <p class="desc">${p.descripcion}</p>
+          <div class="ctl" id="ctl-${p.codigo}">${controlHTML(p.codigo)}</div>
+          <a href="#" class="preguntar" onclick="preguntar('Cuéntame sobre ${p.nombre}'); return false;">Preguntar al asistente</a>
+        </div>
+      </article>`).join("");
+  }
+
+  function actualizarTarjeta(codigo) {
+    const ctl = $("ctl-" + codigo);
+    if (!ctl) return;
+    ctl.innerHTML = controlHTML(codigo);
+    ctl.querySelector("[data-foco]")?.focus();
+  }
+
+  $("buscador").addEventListener("input", (e) => { textoBusqueda = e.target.value; pintarCarta(); });
+
+  /* =========================================================
+     5) PEDIDO
+     ========================================================= */
+  function cambiarCarrito(codigo, delta) {
+    const antes = carrito[codigo] || 0;
+    carrito[codigo] = antes + delta;
+    if (carrito[codigo] <= 0) delete carrito[codigo];
+    if (delta > 0 && antes === 0) toast("Añadido: " + buscar(codigo).nombre);
+    actualizarTarjeta(codigo);
+    pintarCarrito();
+    $("aviso").textContent = "";
+  }
+
+  function calcular() {
+    const subtotal = Object.entries(carrito).reduce((s, [c, q]) => s + buscar(c).precio * q, 0);
+    const delivery = modalidad === "Delivery" && subtotal > 0 ? COSTO_DELIVERY : 0;
+    return { subtotal, delivery, total: subtotal + delivery };
+  }
+
+  function pintarCarrito() {
+    const items = Object.entries(carrito);
+    $("lista").innerHTML = items.length
+      ? items.map(([c, q]) => {
+          const p = buscar(c);
+          return `<li>
+            <span>${p.nombre}</span><strong class="num">${soles(p.precio * q)}</strong>
+            <span class="linea-pie num">
+              <button onclick="cambiarCarrito('${c}', -1)" aria-label="Quitar uno">−</button>${q}
+              <button onclick="cambiarCarrito('${c}', 1)" aria-label="Añadir uno más">+</button>
+            </span></li>`;
+        }).join("")
+      : `<li class="vacio">Tu pedido está vacío. Añade algo de la carta.</li>`;
+
+    const { subtotal, delivery, total } = calcular();
+    $("subtotal").textContent = soles(subtotal);
+    $("costoDelivery").textContent = soles(delivery);
+    $("total").textContent = soles(total);
+    $("contadorNav").textContent = items.reduce((s, [, q]) => s + q, 0);
+    $("btnEnviar").disabled = items.length === 0;
+    guardarCarrito();
+  }
+  function vaciarPedido() { Object.keys(carrito).forEach((k) => delete carrito[k]); pintarCarta(); pintarCarrito(); $("aviso").textContent = ""; toast("Pedido vaciado"); }
+
+  function activarSegmentado(id, alCambiar) {
+    $(id).querySelectorAll("button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        $(id).querySelectorAll("button").forEach((b) => b.classList.remove("activo"));
+        btn.classList.add("activo");
+        alCambiar(btn.dataset.valor);
+      });
+    });
+  }
+  activarSegmentado("segModalidad", (v) => {
+    modalidad = v;
+    $("direccion").style.display = v === "Delivery" ? "block" : "none";
+    pintarCarrito();
+  });
+  activarSegmentado("segPago", (v) => (pago = v));
+
+  let focoPrevio = null;
+  function abrirCajon() { focoPrevio = document.activeElement; $("cajon").inert = false; $("cajon").classList.add("abierto"); $("velo").classList.add("abierto"); $("cajon").setAttribute("aria-hidden", "false"); setTimeout(() => $("cajon").querySelector(".cajon-cab button").focus(), 60); }
+  function cerrarCajon() { if (!$("cajon").classList.contains("abierto")) return; $("cajon").classList.remove("abierto"); $("velo").classList.remove("abierto"); $("cajon").setAttribute("aria-hidden", "true"); $("cajon").inert = true; if (focoPrevio && focoPrevio.focus) focoPrevio.focus(); }
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { if ($("cajon").classList.contains("abierto")) cerrarCajon(); else $("chat").classList.remove("abierto"); } });
+
+  /* Formato: "PEDIDO WEB: 2x Pollo a la brasa 1/4; 1x Chicha morada 1L |
+              Modalidad: Delivery | Dirección: Jr. Ica 250, El Tambo | Pago: Yape" */
+  function enviarPedido() {
+    const items = Object.entries(carrito);
+    if (!items.length) return;
+    const direccion = $("direccion").value.trim();
+    if (modalidad === "Delivery" && !direccion) {
+      $("aviso").textContent = "Escribe tu dirección para el delivery.";
+      $("direccion").focus();
+      return;
+    }
+    const productos = items.map(([c, q]) => `${q}x ${buscar(c).nombre}`).join("; ");
+    let mensaje = `PEDIDO WEB: ${productos} | Modalidad: ${modalidad}`;
+    if (modalidad === "Delivery") mensaje += ` | Dirección: ${direccion}`;
+    mensaje += ` | Pago: ${pago}`;
+    cerrarCajon();
+    abrirChat();
+    toast("Pedido enviado al asistente");
+    enviarMensaje(mensaje);
+  }
+
+  /* =========================================================
+     6) AGENTES: nodo que atiende + registro en vivo
+     ========================================================= */
+  const NODOS = ["orquestador", "ventas", "reclamos", "informacion"];
+  function encender(nombre, modo) {
+    NODOS.forEach((n) => $("nodo-" + n).classList.remove("activo", "pensando"));
+    if (nombre) $("nodo-" + nombre).classList.add(modo);
+  }
+  function registrar(texto) {
+    const ol = $("registro");
+    ol.querySelector(".vacio")?.remove();
+    const li = document.createElement("li");
+    const hora = new Date().toLocaleTimeString("es-PE", { hour12: false, timeZone: "America/Lima" });
+    li.innerHTML = `<time>${hora}</time><span></span>`;
+    li.querySelector("span").textContent = texto;
+    ol.prepend(li);
+    while (ol.children.length > 7) ol.lastElementChild.remove();
+  }
+  function detectarAgente(texto) {
+    const m = /Agente de (Ventas|Reclamos|Informaci[oó]n)/i.exec(texto || "");
+    if (!m) return null;
+    return { clave: m[1].toLowerCase().replace("ó", "o"), nombre: "Agente de " + m[1] };
+  }
+
+  /* =========================================================
+     7) CHAT conectado al Chat Trigger de n8n
+     ========================================================= */
+  function obtenerSessionId() {
+    let id = null;
+    try { id = localStorage.getItem("saborHuancaSessionId"); } catch (e) {}
+    if (!id) {
+      id = crypto.randomUUID ? crypto.randomUUID() : "s-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+      try { localStorage.setItem("saborHuancaSessionId", id); } catch (e) {}
+    }
+    return id;
+  }
+  let SESSION_ID = obtenerSessionId();
+  const HIST_KEY = "saborHuancaHistorial";
+  let historial = [];
+  try { historial = JSON.parse(localStorage.getItem(HIST_KEY) || "[]"); } catch (e) { historial = []; }
+  function guardarHist() { try { localStorage.setItem(HIST_KEY, JSON.stringify(historial.slice(-60))); } catch (e) {} }
+  function pintarCodigo() { $("chatCod").textContent = SESSION_ID.replace(/[^a-z0-9]/gi, "").slice(-4).toUpperCase(); }
+  function nuevaConversacion() {
+    if (enviando) return;
+    try { localStorage.removeItem("saborHuancaSessionId"); localStorage.removeItem(HIST_KEY); } catch (e) {}
+    SESSION_ID = obtenerSessionId(); historial = []; $("mensajes").innerHTML = ""; chatIniciado = false; encender(null); pintarCodigo(); abrirChat(); toast("Nueva conversación");
+  }
+
+  const RESPUESTAS_RAPIDAS = [
+    { texto: "Ver carta",          mensaje: "Quiero ver la carta" },
+    { texto: "Hacer un pedido",    mensaje: "Quiero hacer un pedido" },
+    { texto: "Hacer un reclamo",   mensaje: "Quiero hacer un reclamo" },
+    { texto: "Horario y delivery", mensaje: "¿Cuál es su horario y a qué zonas hacen delivery?" },
+    { texto: "Sí, confirmo",       mensaje: "SÍ, confirmo" },
+  ];
+  let chatIniciado = false;
+  let enviando = false;
+
+  function toggleChat() { $("chat").classList.contains("abierto") ? $("chat").classList.remove("abierto") : abrirChat(); }
+  function abrirChat() {
+    $("chat").classList.add("abierto");
+    if (!chatIniciado) {
+      chatIniciado = true;
+      if (historial.length) historial.forEach((h) => agregarBurbuja(h.tipo, h.texto, h.etiqueta, true));
+      else agregarBurbuja("asistente",
+        "¡Hola! Bienvenido a **Sabor Huanca**.\nPuedo ayudarte con:\n- Hacer un pedido, por nombre o código (ejemplo: *2 P1 y 1 B1*)\n- Registrar un reclamo o una queja\n- Horario, dirección y delivery\n¿En qué te ayudo?");
+    }
+    setTimeout(() => $("chatInput").focus(), 50);
+  }
+  function preguntar(texto) { abrirChat(); enviarMensaje(texto); }
+
+  function renderMarkdown(texto) {
+    const escapar = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const enLinea = (s) => escapar(s)
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/(^|[^*])\*(?!\s)(.+?)\*/g, "$1<em>$2</em>");
+    let html = "", enLista = false;
+    texto.split("\n").forEach((linea) => {
+      const item = linea.match(/^\s*[-•*]\s+(.*)/);
+      if (item) {
+        if (!enLista) { html += "<ul>"; enLista = true; }
+        html += `<li>${enLinea(item[1])}</li>`;
+      } else {
+        if (enLista) { html += "</ul>"; enLista = false; }
+        if (linea.trim()) html += `<p>${enLinea(linea)}</p>`;
+      }
+    });
+    if (enLista) html += "</ul>";
+    return html;
+  }
+
+  function agregarBurbuja(tipo, texto, etiqueta, restaurando) {
+    if (!restaurando) { historial.push({ tipo, texto, etiqueta }); guardarHist(); }
+    const msg = document.createElement("div");
+    msg.className = "msg " + tipo;
+    const b = document.createElement("div");
+    b.className = "burbuja";
+    if (tipo === "asistente") b.innerHTML = renderMarkdown(texto); else b.textContent = texto;
+    msg.appendChild(b);
+    if (etiqueta) {
+      const e = document.createElement("span");
+      e.className = "etiqueta-agente";
+      e.textContent = etiqueta;
+      msg.appendChild(e);
+    }
+    $("mensajes").appendChild(msg);
+    $("mensajes").scrollTop = $("mensajes").scrollHeight;
+  }
+  function mostrarEscribiendo() {
+    const d = document.createElement("div");
+    d.className = "msg asistente";
+    d.id = "escribiendo";
+    d.innerHTML = `<div class="burbuja"><div class="escribiendo" aria-label="El asistente está escribiendo"><i></i><i></i><i></i></div></div>`;
+    $("mensajes").appendChild(d);
+    $("mensajes").scrollTop = $("mensajes").scrollHeight;
+  }
+  function ocultarEscribiendo() { $("escribiendo")?.remove(); }
+
+  async function enviarMensaje(texto, reintento) {
+    texto = (texto || "").trim();
+    if (!texto || enviando) return;
+    enviando = true; $("chatForm").querySelector("button").disabled = true;
+    if (!reintento) agregarBurbuja("cliente", texto);
+    mostrarEscribiendo();
+    encender("orquestador", "pensando");
+    registrar(texto.startsWith("PEDIDO WEB") ? "Pedido web recibido por el Orquestador" : "Mensaje recibido por el Orquestador");
+    const ctl = new AbortController(), tope = setTimeout(() => ctl.abort(), 60000);
+    try {
+      const resp = await fetch(N8N_CHAT_WEBHOOK_URL, {
+        signal: ctl.signal,
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "sendMessage", sessionId: SESSION_ID, chatInput: texto }),
+      });
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      const datos = await resp.json();
+      const respuesta = Array.isArray(datos) ? datos[0]?.output : datos.output;
+      ocultarEscribiendo();
+      const agente = detectarAgente(respuesta);
+      agregarBurbuja("asistente", respuesta || "No recibí respuesta del asistente. Inténtalo de nuevo.", agente?.nombre);
+      encender(agente ? agente.clave : "orquestador", "activo");
+      registrar(agente ? agente.nombre + " respondió" : "El Orquestador respondió");
+    } catch (err) {
+      console.error("Error del chat:", err);
+      ocultarEscribiendo();
+      encender(null);
+      registrar("No hubo conexión con n8n");
+      agregarBurbuja("asistente", "No pude conectar con el asistente. Revisa tu conexión e inténtalo de nuevo.");
+      const rb = document.createElement("button"); rb.type = "button"; rb.className = "reintentar"; rb.textContent = "Reintentar";
+      rb.onclick = () => { rb.remove(); enviarMensaje(texto, true); }; $("mensajes").lastElementChild.appendChild(rb);
+    } finally {
+      clearTimeout(tope); enviando = false; $("chatForm").querySelector("button").disabled = false;
+    }
+  }
+
+  $("rapidas").innerHTML = RESPUESTAS_RAPIDAS
+    .map((r, i) => `<button type="button" onclick="enviarMensaje(RESPUESTAS_RAPIDAS[${i}].mensaje)">${r.texto}</button>`)
+    .join("");
+  $("chatForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const texto = $("chatInput").value;
+    $("chatInput").value = "";
+    enviarMensaje(texto);
+  });
+
+  /* ===== INICIO ===== */
+  pintarFiltros();
+  pintarCarta();
+  pintarCarrito();
+  pintarCodigo();
+</script>
+</body>
+</html>
